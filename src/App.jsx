@@ -12,52 +12,71 @@ function App() {
     JSON.parse(localStorage.getItem("notes")) || []
   );
 
-  //選択状態を管理
-  const [activeNote, setActiveNote] = useState();
+  //アクティブな記事を管理
+  const [activeNoteId, setActiveNoteId] = useState();
 
   useEffect(() => {
     //ローカルストレージにノートを保存する ローカルストレージが読める状態に変換
     localStorage.setItem("notes", JSON.stringify(notes));
 
     //一番目を選択状態に
-    setActiveNote(notes[0].id);
+    setActiveNoteId(notes[0].id);
   }, [notes]);
 
-  //ノートを追加する関数
+  console.log("全ての記事", notes);
+  console.log("アクティブ状態の記事ID", activeNoteId);
+
+  /**
+   * ノートを追加する
+   */
   const onAddNote = () => {
     console.log("新しくノートが追加されました。");
 
     const newNote = {
       id: uuid(),
-      title: "新しいノート",
-      content: "新しいノートの内容",
+      title: "",
+      content: "",
       modDate: Date.now(),
     };
     setNotes([...notes, newNote]);
-
-    console.log(notes);
   };
 
-  //ノートを削除する関数
+  /**
+   * ノートを削除する
+   * @param {記事ID} id
+   */
   const onDeleteNote = (id) => {
     //idが一致しない記事を格納する
+    //※直接notes配列を操作するのではなく、新しい配列をセットしてから差し替える
     const filterNotes = notes.filter((note) => note.id !== id);
     setNotes(filterNotes);
   };
 
+  /**
+   * アクティブ状態(選択、メイン表示)の記事を返す
+   * @returns アクティブ状態の記事
+   */
   const getActiveNote = () => {
-    return notes.find((note) => note.id === activeNote);
+    return notes.find((note) => note.id === activeNoteId);
   };
 
+  /**
+   *
+   * @param {記事等のデータオブジェクト} updatedNote
+   */
   const onUpdateNote = (updatedNote) => {
     //修正された新しいノートの配列を返す
     const updatedNotesArray = notes.map((note) => {
       if (note.id === updatedNote.id) {
+        //選択しているノート
+        console.log("選択している記事", updatedNote);
         return updatedNote;
       } else {
+        //それ以外の選択していないノート
         return note;
       }
     });
+    console.log("修正された新しい記事配列", updatedNotesArray);
     setNotes(updatedNotesArray);
   };
 
@@ -67,8 +86,8 @@ function App() {
         onAddNote={onAddNote}
         onDeleteNote={onDeleteNote}
         notes={notes}
-        activeNote={activeNote}
-        setActiveNote={setActiveNote}
+        activeNoteId={activeNoteId}
+        setActiveNoteId={setActiveNoteId}
       />
       <Main activeNote={getActiveNote()} onUpdateNote={onUpdateNote} />
     </div>

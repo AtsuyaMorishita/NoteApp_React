@@ -5,8 +5,8 @@ function Sidebar({
   onAddNote,
   onDeleteNote,
   notes,
-  activeNote,
-  setActiveNote,
+  activeNoteId,
+  setActiveNoteId,
 }) {
   //日付順に並び替え
   const sortedNotes = notes.sort((a, b) => b.modDate - a.modDate);
@@ -17,15 +17,16 @@ function Sidebar({
         <h1>ノート</h1>
         <button onClick={onAddNote}>追加</button>
       </div>
+
       <div className="app-sidebar-notes">
         {sortedNotes.map((note) => {
           return (
             <div
               className={`app-sidebar-note ${
-                note.id === activeNote && "active"
+                note.id === activeNoteId && "active"
               }`}
               key={note.id}
-              onClick={() => setActiveNote(note.id)}
+              onClick={() => setActiveNoteId(note.id)}
             >
               <div className="sidebar-note-title">
                 <strong>{note.title}</strong>
